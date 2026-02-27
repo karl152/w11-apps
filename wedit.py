@@ -35,6 +35,7 @@ def save():
         PathInputText.set(value=file)
     except:
         writeToConsole("Couln't save " + file)
+    TextBox.focus_set()
 def load():
     if PathInput.get() == "":
         file = filedialog.askopenfilename(parent=Window)
@@ -49,6 +50,7 @@ def load():
         PathInputText.set(value=file)
     except:
         writeToConsole("Couln't open " + file)
+    TextBox.focus_set()
 def loadfile(file):
     try:
         with open(file, "r", encoding="utf-8") as FileContent:
@@ -59,6 +61,7 @@ def loadfile(file):
         PathInputText.set(value=file)
     except:
         writeToConsole("Couln't open " + file)
+    TextBox.focus_set()
 
 Window = tk.Tk()
 PathInputText = tk.StringVar()
@@ -85,6 +88,7 @@ ScrollBar.grid(row=8, column=0, sticky="sn")
 TextBox = tk.Text(Window, yscrollcommand=ScrollBar.set)
 ScrollBar.config(command=TextBox.yview)
 TextBox.grid(row=8, column=1, columnspan=5, sticky="news")
+TextBox.focus_set()
 if len(sys.argv) > 1:
     loadfile(sys.argv[1])
 Window.after(512, updateLineNumber)
