@@ -17,8 +17,10 @@ class myFrame(wx.Frame):
         InfoText = wx.StaticText(panel, label="Use Control-S and Control-R to Search.")
         self.Console = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
         self.PathText = wx.StaticText(panel, label="no file yet")
-        LineThing = wx.StaticText(panel, label="L1")
+        self.LineThing = wx.StaticText(panel, label="L1")
         self.TextArea = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+        self.TextArea.Bind(wx.EVT_KEY_UP, self.updateLineNumber)
+        self.TextArea.Bind(wx.EVT_LEFT_UP, self.updateLineNumber)
         sizer = wx.GridBagSizer(4, 5)
         sizer.Add(QuitButton, pos=(0, 0))
         sizer.Add(SaveButton, pos=(0, 1))
@@ -27,7 +29,7 @@ class myFrame(wx.Frame):
         sizer.Add(InfoText, pos=(1, 0), span=(1, 5), flag=wx.ALIGN_CENTER)
         sizer.Add(self.Console, pos=(2, 0), span=(1, 5), flag=wx.EXPAND)
         sizer.Add(self.PathText, pos=(3, 0), span=(1, 4), flag=wx.ALIGN_CENTER)
-        sizer.Add(LineThing, pos=(3, 4), flag=wx.ALIGN_CENTER)
+        sizer.Add(self.LineThing, pos=(3, 4), flag=wx.ALIGN_CENTER)
         sizer.Add(self.TextArea, pos=(4, 0), span=(1, 5), flag=wx.EXPAND)
         sizer.AddGrowableCol(3)
         sizer.AddGrowableRow(4)
@@ -59,6 +61,10 @@ class myFrame(wx.Frame):
         except:
             self.PathEntry.SetValue(path)
             self.PathText.SetLabel(path)
+    def updateLineNumber(self, _):
+        InsertionPoint = self.TextArea.GetInsertionPoint()
+        LineNumber = len(self.TextArea.GetRange(0, InsertionPoint).split("\n"))
+        self.LineThing.SetLabel(f"L{LineNumber}")
 
 app = wx.App()
 frame = myFrame()
