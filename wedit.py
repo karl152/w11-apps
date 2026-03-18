@@ -7,6 +7,7 @@ class myFrame(wx.Frame):
     def __init__(self):
         super().__init__(None, title="Wedit")
         self.DontCheckIfSaved = False
+        font = wx.Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         panel = wx.Panel(self)
         QuitButton = wx.Button(panel, label="Quit")
         SaveButton = wx.Button(panel, label="Save")
@@ -17,9 +18,11 @@ class myFrame(wx.Frame):
         self.PathEntry = wx.TextCtrl(panel)
         InfoText = wx.StaticText(panel, label="Use Control-S and Control-R to Search.")
         self.Console = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+        self.Console.SetFont(font)
         self.PathText = wx.StaticText(panel, label="no file yet")
         self.LineThing = wx.StaticText(panel, label="L1")
         self.TextArea = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+        self.TextArea.SetFont(font)
         self.TextArea.Bind(wx.EVT_KEY_UP, self.updateLineNumber)
         self.TextArea.Bind(wx.EVT_LEFT_UP, self.updateLineNumber)
         sizer = wx.GridBagSizer(4, 5)
