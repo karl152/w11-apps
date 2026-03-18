@@ -38,6 +38,7 @@ class myFrame(wx.Frame):
         sizer.AddGrowableCol(3)
         sizer.AddGrowableRow(4)
         panel.SetSizer(sizer)
+        self.TextArea.SetFocus()
     def save(self, content):
         with wx.FileDialog(self, "Save file", style=wx.FD_SAVE) as dialog:
             if dialog.ShowModal() == wx.ID_OK:
@@ -52,6 +53,7 @@ class myFrame(wx.Frame):
                 self.SetDontCheckIfSaved(False)
         except:
             self.Console.AppendText(f"Couldn't save {path}\n")
+        self.TextArea.SetFocus()
     def load(self):
         with wx.FileDialog(self, "Load file", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as dialog:
             if dialog.ShowModal() == wx.ID_OK:
@@ -66,6 +68,7 @@ class myFrame(wx.Frame):
         except:
             self.PathEntry.SetValue(path)
             self.PathText.SetLabel(path)
+        self.TextArea.SetFocus()
     def updateLineNumber(self, _):
         InsertionPoint = self.TextArea.GetInsertionPoint()
         LineNumber = len(self.TextArea.GetRange(0, InsertionPoint).split("\n"))
