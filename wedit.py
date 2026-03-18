@@ -70,11 +70,12 @@ class myFrame(wx.Frame):
         self.PathEntry.SetValue(path)
         self.PathText.SetLabel(path)
         self.TextArea.SetFocus()
-    def updateLineNumber(self, _):
+    def updateLineNumber(self, event):
         InsertionPoint = self.TextArea.GetInsertionPoint()
         LineNumber = len(self.TextArea.GetRange(0, InsertionPoint).split("\n"))
         self.LineThing.SetLabel(f"L{LineNumber}")
         self.SetDontCheckIfSaved(False)
+        event.Skip()
     def checkIfSaved(self, path, content):
         if self.DontCheckIfSaved == True:
             return True
