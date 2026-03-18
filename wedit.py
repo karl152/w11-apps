@@ -10,25 +10,52 @@ class myFrame(wx.Frame):
         QuitButton = wx.Button(panel, label="Quit")
         SaveButton = wx.Button(panel, label="Save")
         LoadButton = wx.Button(panel, label="Load")
-        PathEntry = wx.TextCtrl(panel)
+        QuitButton.Bind(wx.EVT_BUTTON, lambda event: self.Close())
+        SaveButton.Bind(wx.EVT_BUTTON, lambda event: self.save(self.TextArea.GetValue()) if self.PathEntry.GetValue() == "" else self.savefile(self.PathEntry.GetValue(), self.TextArea.GetValue()))
+        LoadButton.Bind(wx.EVT_BUTTON, lambda event: self.load() if self.PathEntry.GetValue() == "" else self.loadfile(self.PathEntry.GetValue()))
+        self.PathEntry = wx.TextCtrl(panel)
         InfoText = wx.StaticText(panel, label="Use Control-S and Control-R to Search.", style=wx.ALIGN_CENTER)
-        Console = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+        self.Console = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
         PathText = wx.StaticText(panel, label="no file yet", style=wx.ALIGN_CENTER)
         LineThing = wx.StaticText(panel, label="L1", style=wx.ALIGN_CENTER)
-        TextArea = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+        self.TextArea = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
         sizer = wx.GridBagSizer(4, 5)
         sizer.Add(QuitButton, pos=(0, 0))
         sizer.Add(SaveButton, pos=(0, 1))
         sizer.Add(LoadButton, pos=(0, 2))
-        sizer.Add(PathEntry, pos=(0, 3), span=(1, 2), flag=wx.EXPAND)
+        sizer.Add(self.PathEntry, pos=(0, 3), span=(1, 2), flag=wx.EXPAND)
         sizer.Add(InfoText, pos=(1, 0), span=(1, 5), flag=wx.EXPAND)
-        sizer.Add(Console, pos=(2, 0), span=(1, 5), flag=wx.EXPAND)
+        sizer.Add(self.Console, pos=(2, 0), span=(1, 5), flag=wx.EXPAND)
         sizer.Add(PathText, pos=(3, 0), span=(1, 4), flag=wx.EXPAND)
         sizer.Add(LineThing, pos=(3, 4))
-        sizer.Add(TextArea, pos=(4, 0), span=(1, 5), flag=wx.EXPAND)
+        sizer.Add(self.TextArea, pos=(4, 0), span=(1, 5), flag=wx.EXPAND)
         sizer.AddGrowableCol(3)
         sizer.AddGrowableRow(4)
         panel.SetSizer(sizer)
+    def save(self, content):
+        with wx.FileDialog(self, "Save file", style=wx.FD_SAVE) as dialog:
+            if dialog.ShowModal() == wx.ID_OK:
+                path = dialog.GetPath()
+                self.PathEntry.SetValue(path)
+                self.savefile(path, content)
+    def savefile(self, path, content):
+        try:
+            with open(path, "w", encoding="utf-8") as file:
+                file.write(content.rstrip())
+        except:
+            self.Console.AppendText(f"Couldn't save {path}\n")
+    def load(self):
+        with wx.FileDialog(self, "Load file", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as dialog:
+            if dialog.ShowModal() == wx.ID_OK:
+                path = dialog.GetPath()
+                self.PathEntry.SetValue(path)
+                self.loadfile(path)
+    def loadfile(self, path):
+        try:
+            with open(path, "r", encoding="utf-8") as file:
+                self.TextArea.SetValue(file.read())
+        except:
+            self.Console.AppendText(f"Couldn't load {path}\n")
 
 app = wx.App()
 frame = myFrame()
