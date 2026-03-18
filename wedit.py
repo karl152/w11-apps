@@ -6,11 +6,12 @@ import wx
 class myFrame(wx.Frame):
     def __init__(self):
         super().__init__(None, title="Wedit")
+        self.DontCheckIfSaved = False
         panel = wx.Panel(self)
         QuitButton = wx.Button(panel, label="Quit")
         SaveButton = wx.Button(panel, label="Save")
         LoadButton = wx.Button(panel, label="Load")
-        QuitButton.Bind(wx.EVT_BUTTON, lambda event: self.Close())
+        QuitButton.Bind(wx.EVT_BUTTON, lambda event: self.Close() if self.checkIfSaved(self.PathEntry.GetValue(), self.TextArea.GetValue()) == True else self.SetDontCheckIfSaved(True))
         SaveButton.Bind(wx.EVT_BUTTON, lambda event: self.save(self.TextArea.GetValue()) if self.PathEntry.GetValue() == "" else self.savefile(self.PathEntry.GetValue(), self.TextArea.GetValue()))
         LoadButton.Bind(wx.EVT_BUTTON, lambda event: self.load() if self.PathEntry.GetValue() == "" else self.loadfile(self.PathEntry.GetValue()))
         self.PathEntry = wx.TextCtrl(panel)
@@ -45,6 +46,7 @@ class myFrame(wx.Frame):
         try:
             with open(path, "w", encoding="utf-8") as file:
                 file.write(content.rstrip())
+                self.SetDontCheckIfSaved(False)
         except:
             self.Console.AppendText(f"Couldn't save {path}\n")
     def load(self):
@@ -65,6 +67,26 @@ class myFrame(wx.Frame):
         InsertionPoint = self.TextArea.GetInsertionPoint()
         LineNumber = len(self.TextArea.GetRange(0, InsertionPoint).split("\n"))
         self.LineThing.SetLabel(f"L{LineNumber}")
+        self.SetDontCheckIfSaved(False)
+    def checkIfSaved(self, path, content):
+        if self.DontCheckIfSaved == True:
+            return True
+        else:
+            if path == "":
+                if content == "":
+                    return True
+                else:
+                    self.Console.AppendText(f"Unsaved changes. Save them, or Quit again.\n")
+                    return False
+            else:
+                with open(path, "r", encoding="utf-8") as file:
+                    if file.read().rstrip() == content.rstrip():
+                        return True
+                    else:
+                        self.Console.AppendText(f"Unsaved changes. Save them, or Quit again.\n")
+                        return False
+    def SetDontCheckIfSaved(self, value):
+        self.DontCheckIfSaved = value
 
 app = wx.App()
 frame = myFrame()
