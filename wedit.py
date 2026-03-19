@@ -2,7 +2,6 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import wx, sys
-from wx import stc
 
 class myFrame(wx.Frame):
     def __init__(self):
@@ -13,8 +12,8 @@ class myFrame(wx.Frame):
         QuitButton = wx.Button(panel, label="Quit")
         SaveButton = wx.Button(panel, label="Save")
         LoadButton = wx.Button(panel, label="Load")
-        QuitButton.Bind(wx.EVT_BUTTON, lambda event: self.Close() if self.checkIfSaved(self.PathEntry.GetValue(), self.TextArea.GetText()) == True else self.SetDontCheckIfSaved(True))
-        SaveButton.Bind(wx.EVT_BUTTON, lambda event: self.save(self.TextArea.GetText()) if self.PathEntry.GetValue() == "" else self.savefile(self.PathEntry.GetValue(), self.TextArea.GetText()))
+        QuitButton.Bind(wx.EVT_BUTTON, lambda event: self.Close() if self.checkIfSaved(self.PathEntry.GetValue(), self.TextArea.GetValue()) == True else self.SetDontCheckIfSaved(True))
+        SaveButton.Bind(wx.EVT_BUTTON, lambda event: self.save(self.TextArea.GetValue()) if self.PathEntry.GetValue() == "" else self.savefile(self.PathEntry.GetValue(), self.TextArea.GetValue()))
         LoadButton.Bind(wx.EVT_BUTTON, lambda event: self.load() if self.PathEntry.GetValue() == "" else self.loadfile(self.PathEntry.GetValue()))
         self.PathEntry = wx.TextCtrl(panel)
         InfoText = wx.StaticText(panel, label="Use Control-S and Control-R to Search.")
@@ -29,10 +28,10 @@ class myFrame(wx.Frame):
         self.Console.SetFont(font)
         self.PathText = wx.StaticText(self.BottomPanel, label="no file yet")
         self.LineThing = wx.StaticText(self.BottomPanel, label="L1")
-        self.TextArea = stc.StyledTextCtrl(self.BottomPanel, style=wx.TE_MULTILINE)
-        self.TextArea.StyleSetFont(stc.STC_STYLE_DEFAULT, font)
-        self.TextArea.SetScrollWidthTracking(True)
-        self.TextArea.Bind(stc.EVT_STC_UPDATEUI, self.updateLineNumber)
+        self.TextArea = wx.TextCtrl(self.BottomPanel, style=wx.TE_MULTILINE)
+        self.TextArea.SetFont(font)
+        self.TextArea.Bind(wx.EVT_KEY_UP, self.updateLineNumber)
+        self.TextArea.Bind(wx.EVT_LEFT_UP, self.updateLineNumber)
         sizer = wx.GridBagSizer(3, 4)
         sizer.Add(QuitButton, pos=(0, 0))
         sizer.Add(SaveButton, pos=(0, 1))
@@ -80,7 +79,7 @@ class myFrame(wx.Frame):
     def loadfile(self, path):
         try:
             with open(path, "r", encoding="utf-8") as file:
-                self.TextArea.SetText(file.read())
+                self.TextArea.SetValue(file.read())
         except:
             pass
         self.PathEntry.SetValue(path)
@@ -88,8 +87,9 @@ class myFrame(wx.Frame):
         self.BottomPanel.Layout()
         self.TextArea.SetFocus()
     def updateLineNumber(self, event):
-        LineNumber = self.TextArea.GetCurrentLine()
-        self.LineThing.SetLabel(f"L{LineNumber+1}")
+        InsertionPoint = self.TextArea.GetInsertionPoint()
+        LineNumber = len(self.TextArea.GetRange(0, InsertionPoint).split("\n"))
+        self.LineThing.SetLabel(f"L{LineNumber}")
         self.BottomPanel.Layout()
         self.SetDontCheckIfSaved(False)
         event.Skip()
