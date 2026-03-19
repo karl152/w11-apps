@@ -31,6 +31,7 @@ class myFrame(wx.Frame):
         self.LineThing = wx.StaticText(self.BottomPanel, label="L1")
         self.TextArea = stc.StyledTextCtrl(self.BottomPanel, style=wx.TE_MULTILINE)
         self.TextArea.StyleSetFont(stc.STC_STYLE_DEFAULT, font)
+        self.TextArea.SetScrollWidthTracking(True)
         self.TextArea.Bind(stc.EVT_STC_UPDATEUI, self.updateLineNumber)
         sizer = wx.GridBagSizer(3, 4)
         sizer.Add(QuitButton, pos=(0, 0))
