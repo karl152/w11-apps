@@ -188,11 +188,6 @@ class SearchAndReplaceFrame(wx.Dialog):
                 MainFrame.TextArea.SetSelection(position+len(searchtext), position)
             else:
                 MainFrame.TextArea.SetSelection(position, position+len(searchtext))
-        else:
-            if self.ForwardButton.GetValue() == True:
-                MainFrame.TextArea.SetInsertionPoint(0)
-            else:
-                MainFrame.TextArea.SetInsertionPoint(len(MainFrame.TextArea.GetValue()))
         MainFrame.TextArea.SetFocus()
 
 app = wx.App()
