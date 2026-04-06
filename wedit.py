@@ -115,16 +115,20 @@ class myFrame(wx.Frame):
         self.DontCheckIfSaved = value
     def keyBind(self, event):
         if event.ControlDown():
-            if event.KeyCode == 70 or event.KeyCode == 82:
-                SearchAndReplaceFrame(self)
+            if event.KeyCode == 70:
+                SearchAndReplaceFrame(self, True)
+            elif event.KeyCode == 82:
+                SearchAndReplaceFrame(self, False)
         event.Skip()
 class SearchAndReplaceFrame(wx.Dialog):
-    def __init__(self, MainFrame):
+    def __init__(self, MainFrame, forward):
         super().__init__(MainFrame, title="search")
         self.panel = wx.Panel(self)
         self.Description = wx.StaticText(self.panel, label="Use <Tab> to change fields.\nUse ^q<Tab> for <Tab>.")
         self.BackwardButton = wx.RadioButton(self.panel, label="Backward", style=wx.RB_GROUP)
         self.ForwardButton = wx.RadioButton(self.panel, label="Forward")
+        if forward == True:
+            self.ForwardButton.SetValue(True)
         self.CaseSensitiveCheckbox = wx.CheckBox(self.panel, label="Case Sensitive")
         self.CaseSensitiveCheckbox.SetValue(True)
         self.SearchForLabel = wx.StaticText(self.panel, label="Search for:")
