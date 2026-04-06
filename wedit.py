@@ -162,27 +162,50 @@ class SearchAndReplaceFrame(wx.Dialog):
         self.Fit()
         self.Show()
     def ReplaceAll(self, MainFrame):
-        text = MainFrame.TextArea.GetValue()
-        text = text.replace(self.SearchEntry.GetValue(), self.ReplaceEntry.GetValue())
-        MainFrame.TextArea.SetValue(text)
+        if self.CaseSensitiveCheckbox.GetValue() == True:
+            text = MainFrame.TextArea.GetValue()
+            text = text.replace(self.SearchEntry.GetValue(), self.ReplaceEntry.GetValue())
+            MainFrame.TextArea.SetValue(text)
+        else:
+            fw = self.ForwardButton.GetValue()
+            self.ForwardButton.SetValue(True)
+            while self.Replace(MainFrame) != -1:
+                pass
+            self.BackwardButton.SetValue(True)
+            while self.Replace(MainFrame) != -1:
+                pass
+            if fw == True:
+                self.ForwardButton.SetValue(True)
     def Replace(self, MainFrame):
-        searchtext = self.SearchEntry.GetValue()
+        if self.CaseSensitiveCheckbox.GetValue() == True:
+            searchtext = self.SearchEntry.GetValue()
+            thetext = MainFrame.TextArea.GetValue()
+        else:
+            searchtext = self.SearchEntry.GetValue().lower()
+            thetext = MainFrame.TextArea.GetValue().lower()
         replacetext = self.ReplaceEntry.GetValue()
         startpos = MainFrame.TextArea.GetSelection()[0]
         endpos = MainFrame.TextArea.GetSelection()[1]
-        if MainFrame.TextArea.GetValue()[startpos:endpos] == searchtext:
+        if thetext[startpos:endpos] == searchtext:
             MainFrame.TextArea.Replace(startpos, endpos, replacetext)
             self.Search(MainFrame)
         else:
-            if self.Search(MainFrame) != 5:
+            if self.Search(MainFrame) != -1:
                 self.Replace(MainFrame)
+            else:
+                return -1
         MainFrame.TextArea.SetFocus()
     def Search(self, MainFrame):
-        searchtext = self.SearchEntry.GetValue()
-        if self.ForwardButton.GetValue() == True:
-            position = MainFrame.TextArea.GetValue().find(searchtext, MainFrame.TextArea.GetInsertionPoint())
+        if self.CaseSensitiveCheckbox.GetValue() == True:
+            searchtext = self.SearchEntry.GetValue()
+            thetext = MainFrame.TextArea.GetValue()
         else:
-            position = MainFrame.TextArea.GetValue().rfind(searchtext, 0, MainFrame.TextArea.GetInsertionPoint())
+            searchtext = self.SearchEntry.GetValue().lower()
+            thetext = MainFrame.TextArea.GetValue().lower()
+        if self.ForwardButton.GetValue() == True:
+            position = thetext.find(searchtext, MainFrame.TextArea.GetInsertionPoint())
+        else:
+            position = thetext.rfind(searchtext, 0, MainFrame.TextArea.GetInsertionPoint())
         if position != -1:
             MainFrame.TextArea.SetInsertionPoint(position + len(searchtext))
             if self.ForwardButton.GetValue() == True:
@@ -190,7 +213,7 @@ class SearchAndReplaceFrame(wx.Dialog):
             else:
                 MainFrame.TextArea.SetSelection(position, position+len(searchtext))
         else:
-            return 5
+            return -1
         MainFrame.TextArea.SetFocus()
 
 app = wx.App()
