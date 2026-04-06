@@ -164,17 +164,14 @@ class SearchAndReplaceFrame(wx.Dialog):
     def Replace(self, MainFrame):
         searchtext = self.SearchEntry.GetValue()
         replacetext = self.ReplaceEntry.GetValue()
-        if self.ForwardButton.GetValue() == True:
-            position = MainFrame.TextArea.GetValue().find(searchtext)
+        startpos = MainFrame.TextArea.GetSelection()[0]
+        endpos = MainFrame.TextArea.GetSelection()[1]
+        if MainFrame.TextArea.GetValue()[startpos:endpos] == searchtext:
+            MainFrame.TextArea.Replace(startpos, endpos, replacetext)
+            self.Search(MainFrame)
         else:
-            position = MainFrame.TextArea.GetValue().rfind(searchtext)
-        if position != -1:
-            MainFrame.TextArea.SetSelection(position, position+len(searchtext))
-            MainFrame.TextArea.Replace(position, position+len(searchtext), replacetext)
-        if self.ForwardButton.GetValue() == True:
-            position = MainFrame.TextArea.GetValue().find(searchtext)
-        else:
-            position = MainFrame.TextArea.GetValue().rfind(searchtext)
+            if self.Search(MainFrame) != 5:
+                self.Replace(MainFrame)
         MainFrame.TextArea.SetFocus()
     def Search(self, MainFrame):
         searchtext = self.SearchEntry.GetValue()
@@ -188,6 +185,8 @@ class SearchAndReplaceFrame(wx.Dialog):
                 MainFrame.TextArea.SetSelection(position+len(searchtext), position)
             else:
                 MainFrame.TextArea.SetSelection(position, position+len(searchtext))
+        else:
+            return 5
         MainFrame.TextArea.SetFocus()
 
 app = wx.App()
