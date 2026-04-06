@@ -42,7 +42,7 @@ class myFrame(wx.Frame):
         sizer.Add(self.Splitter, pos=(2, 0), span=(1, 4), flag=wx.EXPAND)
         self.TopSizer.Add(self.Console, pos=(0, 0), flag=wx.EXPAND)
         self.BottomSizer.Add(self.PathText, pos=(0, 0), flag=wx.ALIGN_CENTER)
-        self.BottomSizer.Add(self.LineThing, pos=(0, 1), flag=wx.ALIGN_CENTER)
+        self.BottomSizer.Add(self.LineThing, pos=(0, 1), flag=wx.ALIGN_CENTER | wx.RIGHT, border=25)
         self.BottomSizer.Add(self.TextArea, pos=(1, 0), span=(1, 2), flag=wx.EXPAND)
         self.Splitter.SplitHorizontally(self.TopPanel, self.BottomPanel, 40)
         sizer.AddGrowableCol(3)
