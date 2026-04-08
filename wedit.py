@@ -32,7 +32,7 @@ class myFrame(wx.Frame):
         self.TextArea.SetFont(font)
         self.TextArea.Bind(wx.EVT_KEY_UP, self.updateLineNumber)
         self.TextArea.Bind(wx.EVT_LEFT_UP, self.updateLineNumber)
-        self.TextArea.Bind(wx.EVT_KEY_DOWN, self.keyBind)
+        self.TextArea.Bind(wx.EVT_CHAR_HOOK, self.keyBind)
         sizer = wx.GridBagSizer(3, 4)
         sizer.Add(QuitButton, pos=(0, 0))
         sizer.Add(SaveButton, pos=(0, 1))
@@ -114,17 +114,21 @@ class myFrame(wx.Frame):
     def SetDontCheckIfSaved(self, value):
         self.DontCheckIfSaved = value
     def keyBind(self, event):
+        key = event.KeyCode
+        if key == wx.WXK_TAB:
+            self.TextArea.WriteText("\t")
+            return
         if event.ControlDown():
-            if event.KeyCode == 70:
+            if key == 70:
                 SearchAndReplaceFrame(self, True)
-            elif event.KeyCode == 82:
+            elif key == 82:
                 SearchAndReplaceFrame(self, False)
         event.Skip()
 class SearchAndReplaceFrame(wx.Dialog):
     def __init__(self, MainFrame, forward):
         super().__init__(MainFrame, title="search")
         self.panel = wx.Panel(self)
-        self.Description = wx.StaticText(self.panel, label="Use <Tab> to change fields.\nUse ^q<Tab> for <Tab>.")
+        self.Description = wx.StaticText(self.panel, label="Use <Tab> to change fields.\nUse ^<Tab> for <Tab>.")
         self.BackwardButton = wx.RadioButton(self.panel, label="Backward", style=wx.RB_GROUP)
         self.ForwardButton = wx.RadioButton(self.panel, label="Forward")
         if forward == True:
@@ -156,6 +160,7 @@ class SearchAndReplaceFrame(wx.Dialog):
         self.sizer.Add(self.ReplaceButton, pos=(4, 1), flag=wx.BOTTOM, border=10)
         self.sizer.Add(self.ReplaceAllButton, pos=(4, 2), flag=wx.BOTTOM, border=10)
         self.sizer.Add(self.CancelButton, pos=(4, 3), flag=wx.RIGHT, border=25)
+        self.Bind(wx.EVT_CHAR_HOOK, self.keyBind)
         self.panel.SetSizer(self.sizer)
         self.SearchEntry.SetFocus()
         self.panel.Fit()
@@ -215,6 +220,14 @@ class SearchAndReplaceFrame(wx.Dialog):
         else:
             return -1
         MainFrame.TextArea.SetFocus()
+    def keyBind(self, event):
+        key = event.KeyCode
+        if event.ControlDown() and key == wx.WXK_TAB:
+            focused = self.FindFocus() # self -> wx.Window
+            if isinstance(focused, wx.TextCtrl):
+                focused.WriteText("\t")
+            return
+        event.Skip()
 
 app = wx.App()
 frame = myFrame()
