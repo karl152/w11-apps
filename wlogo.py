@@ -2,7 +2,7 @@ import wx, platform
 
 class WlogoFrame(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="xlogo")
+        super().__init__(None, title="wlogo")
         self.panel = wx.Panel(self)
         self.sizer = wx.GridBagSizer(2, 2)
         for i in range(2):
