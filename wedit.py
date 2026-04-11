@@ -5,7 +5,7 @@ import wx, sys
 
 class myFrame(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="Wedit")
+        super().__init__(None, title="Wedit", size=(700, 500))
         self.DontCheckIfSaved = False
         font = wx.Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         panel = wx.Panel(self)
