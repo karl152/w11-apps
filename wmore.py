@@ -2,7 +2,7 @@ import wx, sys
 
 class WmoreFrame(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="wmore")
+        super().__init__(None, title="wmore", size=(700, 500))
         self.font = wx.Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         self.panel = wx.Panel(self)
         self.Text = wx.TextCtrl(self.panel, style=wx.TE_MULTILINE)
