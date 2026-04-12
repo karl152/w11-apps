@@ -1,4 +1,8 @@
-import wx, sys, argparse
+import wx, sys, argparse, platform
+
+if platform.system() == "Windows":
+    import ctypes
+    ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 class WmessageDialog(wx.Dialog):
     def __init__(self):

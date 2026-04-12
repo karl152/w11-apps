@@ -1,4 +1,8 @@
-import wx, argparse
+import wx, argparse, platform
+
+if platform.system() == "Windows":
+    import ctypes
+    ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 class WmoreFrame(wx.Frame):
     def __init__(self):

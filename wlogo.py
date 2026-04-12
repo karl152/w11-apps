@@ -1,8 +1,12 @@
 import wx, platform
 
+if platform.system() == "Windows":
+    import ctypes
+    ctypes.windll.shcore.SetProcessDpiAwareness(2)
+
 class WlogoFrame(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="wlogo")
+        super().__init__(None, title="wlogo", size=(250, 250))
         self.panel = wx.Panel(self)
         self.sizer = wx.GridBagSizer(2, 2)
         for i in range(2):

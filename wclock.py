@@ -1,5 +1,9 @@
-import wx, wx.lib.analogclock, time, sys
+import wx, wx.lib.analogclock, time, sys, platform
 from datetime import datetime
+
+if platform.system() == "Windows":
+    import ctypes
+    ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 class WclockAnalogFrame(wx.Frame):
     def __init__(self):
