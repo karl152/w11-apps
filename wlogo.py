@@ -2,7 +2,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # SPDX-License-Identifier: MIT
 
-import wx, wx.svg, platform, os, sys
+import wx, wx.svg, platform, os, argparse
 
 if platform.system() == "Windows":
     import ctypes
@@ -14,6 +14,9 @@ else:
 class WlogoFrame(base):
     def __init__(self):
         super().__init__(None, title="wlogo", size=(250, 250))
+        self.args = self.parseArgs()
+        if self.args.background:
+            print(self.args.background)
         self.panel = wx.Panel(self)
         self.sizer = wx.GridBagSizer(5, 5)
         if platform.system() == "Windows":
@@ -49,7 +52,10 @@ class WlogoFrame(base):
         self.Show()
     def draw(self, event):
         self.PDC = wx.PaintDC(self.panel)
-        if self.X11 == True:
+        if self.args.background:
+            self.PDC.SetBackground(wx.Brush(self.args.background))
+            self.PDC.Clear()
+        elif self.X11 == True:
             self.PDC.SetBackground(wx.Brush("#d22232"))
             self.PDC.Clear()
         self.GC = wx.GraphicsContext.Create(self.PDC)
@@ -62,6 +68,10 @@ class WlogoFrame(base):
         self.GC.Translate(X, Y)
         self.GC.Scale(Scale, Scale)
         self.SVGImage.RenderToGC(self.GC)
+    def parseArgs(self):
+        parser = argparse.ArgumentParser(prog="wlogo")
+        parser.add_argument("-background", type=str, help='background color')
+        return parser.parse_args()
 
 app = wx.App()
 frame = WlogoFrame()
