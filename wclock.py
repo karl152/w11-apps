@@ -8,8 +8,13 @@ from datetime import datetime
 if platform.system() == "Windows":
     import ctypes
     ctypes.windll.shcore.SetProcessDpiAwareness(2)
-
-class WclockAnalogFrame(wx.Frame):
+    base = wx.MiniFrame
+else:
+    if "-mini" in sys.argv:
+        base = wx.MiniFrame
+    else:
+        base = wx.Frame
+class WclockAnalogFrame(base):
     def __init__(self):
         super().__init__(None, title="wclock", size=(200, 200))
         self.panel = wx.Panel(self)
@@ -19,7 +24,7 @@ class WclockAnalogFrame(wx.Frame):
         self.sizer.AddGrowableCol(0)
         self.sizer.Add(self.clock, pos=(0, 0), flag=wx.EXPAND | wx.ALL)
         self.panel.SetSizer(self.sizer)
-class WclockDigitalFrame(wx.Frame):
+class WclockDigitalFrame(base):
     def __init__(self):
         super().__init__(None, title="wclock")
         self.WeekDayThing = {

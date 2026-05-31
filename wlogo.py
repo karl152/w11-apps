@@ -2,13 +2,16 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # SPDX-License-Identifier: MIT
 
-import wx, wx.svg, platform, os
+import wx, wx.svg, platform, os, sys
 
 if platform.system() == "Windows":
     import ctypes
     ctypes.windll.shcore.SetProcessDpiAwareness(2)
+    base = wx.MiniFrame
+else:
+    base = wx.Frame
 
-class WlogoFrame(wx.Frame):
+class WlogoFrame(base):
     def __init__(self):
         super().__init__(None, title="wlogo", size=(250, 250))
         self.panel = wx.Panel(self)
