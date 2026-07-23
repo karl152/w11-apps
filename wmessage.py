@@ -30,8 +30,12 @@ class WmessageDialog(wx.Dialog):
         if self.args.default:
             self.HighlightedButton.SetDefault()
         self.panel.SetSizer(self.sizer)
-        self.Text.SetValue(self.loadText())
+        TextContent = self.loadText()
+        self.Text.SetValue(TextContent)
         self.Text.SetEditable(False)
+        DC = wx.ClientDC(self)
+        width, height = DC.GetTextExtent(TextContent)
+        self.Text.SetMinSize((width+5, height+5))
         if self.args.timeout:
             self.Timer = wx.Timer(self)
             self.Bind(wx.EVT_TIMER, self.closeOnTimeout, self.Timer)
