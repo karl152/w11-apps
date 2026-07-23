@@ -1,4 +1,4 @@
-# Copyright (C) 2026 karl152
+# Copyright (C) 2026 Karl Wesseler
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # SPDX-License-Identifier: MIT
 
@@ -69,17 +69,13 @@ class WmessageDialog(wx.Dialog):
     def closeOnButton(self, event, button, exitcode):
         if self.args.print:
             print(button)
-        self.Close()
-        event.Skip()
-        sys.exit(exitcode)
+        self.exitcode = exitcode
+        self.Destroy()
     def closeOnClose(self, event):
-        self.Close()
-        event.Skip()
-        sys.exit(0)
+        self.exitcode = 0
+        self.Destroy()
     def closeOnTimeout(self, event):
-        self.Close()
-        event.Skip()
-        sys.exit(0)
+        self.closeOnClose()
     def parseArgs(self):
         parser = argparse.ArgumentParser(prog="wmessage")
         parser.add_argument("message", type=str)
@@ -94,3 +90,4 @@ app = wx.App()
 frame = WmessageDialog()
 frame.Show()
 app.MainLoop()
+sys.exit(frame.exitcode)
